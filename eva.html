@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EVA – Emotional Virtual Assistant</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+/* AUTH */
+#auth {
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.box {
+    background:#1e293b;
+    padding:30px;
+    border-radius:10px;
+    width:300px;
+    text-align:center;
+}
+
+input {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:none;
+    border-radius:6px;
+}
+
+button {
+    padding:10px;
+    width:100%;
+    background:#3b82f6;
+    border:none;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.toggle {
+    margin-top:10px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+/* APP */
+#app {
+    display:none;
+    height:100vh;
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width:220px;
+    background:#020617;
+    padding:20px;
+}
+
+.sidebar h2 { margin-bottom:10px; }
+
+.tagline {
+    font-size:12px;
+    opacity:0.6;
+    margin-bottom:20px;
+}
+
+.sidebar button {
+    margin:10px 0;
+}
+
+/* MAIN */
+.main {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+}
+
+/* CHAT */
+.chat {
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.msg {
+    max-width:70%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:10px;
+}
+
+.user {
+    background:#3b82f6;
+    margin-left:auto;
+}
+
+.ai {
+    background:#1e293b;
+}
+
+.typing {
+    font-style:italic;
+    opacity:0.7;
+}
+
+/* INPUT */
+.input-area {
+    display:flex;
+    padding:10px;
+    background:#020617;
+}
+
+.input-area input {
+    flex:1;
+}
+
+.input-area button {
+    width:90px;
+    margin-left:10px;
+}
+
+/* PANEL */
+.panel {
+    position:absolute;
+    right:10px;
+    top:10px;
+    background:#1e293b;
+    padding:15px;
+    border-radius:10px;
+    width:200px;
+}
+
+/* AVATAR */
+.avatar {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#3b82f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    margin-bottom:10px;
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform:scale(1); }
+    50% { transform:scale(1.1); }
+    100% { transform:scale(1); }
+}
+
+/* CAMERA */
+.camera-feed {
+    background:black;
+    height:100px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    margin:10px 0;
+}
+
+/* MIC */
+#micBtn.active {
+    background:red;
+    animation:pulse 1s infinite;
+}
+
+/* ABOUT */
+#about {
+    display:none;
+    padding:20px;
+    overflow-y:auto;
+}
+
+#about h2, #about h3 {
+    margin-bottom:10px;
+}
+
+#about p, #about li {
+    margin-bottom:8px;
+    line-height:1.5;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .sidebar { display:none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<div id="auth">
+    <div class="box">
+        <h2 id="title">Login</h2>
+        <input placeholder="Username">
+        <input type="password" placeholder="Password">
+        <button onclick="enter()">Continue</button>
+        <div class="toggle" onclick="toggleMode()">New user? Sign up</div>
+    </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<div class="sidebar">
+    <h2>🤖 EVA</h2>
+    <div class="tagline">Emotion-Aware Wellness AI</div>
+
+    <button onclick="show('chat')">Assistant</button>
+    <button onclick="show('about')">About</button>
+</div>
+
+<div class="main">
+
+<!-- PANEL -->
+<div class="panel">
+    <div class="avatar">🤖</div>
+
+    <div class="camera-feed">
+        📷 Camera Active
+    </div>
+
+    <p>Emotion: <b id="emotion">Neutral</b></p>
+
+    <button id="micBtn" onclick="voice()">🎤 Talk</button>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="chat">
+    <div class="msg ai">
+        Hello, I’m EVA. I’m here to support your emotional and wellness needs.
+    </div>
+</div>
+
+<div class="input-area">
+    <input id="input" placeholder="Share how you're feeling...">
+    <button onclick="send()">Send</button>
+</div>
+
+<!-- ABOUT -->
+<div id="about">
+
+    <h2>About EVA</h2>
+
+    <p><b>EVA (Emotional Virtual Assistant)</b> is an intelligent AI-based system designed
+    to understand human emotions and provide supportive wellness suggestions.</p>
+
+    <h3>Purpose of EVA</h3>
+    <p>EVA helps users recognize stress and improve well-being through simple guidance.</p>
+
+    <h3>How EVA Works</h3>
+    <ul>
+        <li>📷 Facial expression detection</li>
+        <li>🎤 Voice interaction</li>
+        <li>🧠 Emotion analysis</li>
+        <li>💬 Smart suggestions</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+        <li>Emotion-aware system</li>
+        <li>Chat-based interaction</li>
+        <li>Always active (with consent)</li>
+        <li>Simple and user-friendly</li>
+    </ul>
+
+    <h3>Privacy & Safety</h3>
+    <p>No personal data is stored. EVA provides only general wellness support.</p>
+
+    <h3>Future Scope</h3>
+    <ul>
+        <li>Real AI integration</li>
+        <li>Wearable device support</li>
+        <li>Advanced emotion detection</li>
+    </ul>
+
+</div>
+
+</div>
+</div>
+
+<script>
+let signup=false;
+
+function toggleMode(){
+    signup=!signup;
+    document.getElementById("title").innerText = signup ? "Sign Up" : "Login";
+}
+
+function enter(){
+    document.getElementById("auth").style.display="none";
+    document.getElementById("app").style.display="flex";
+}
+
+function show(page){
+    document.getElementById("chat").style.display="none";
+    document.getElementById("about").style.display="none";
+    document.getElementById(page).style.display="block";
+}
+
+function send(){
+    let input=document.getElementById("input");
+    let chat=document.getElementById("chat");
+
+    if(input.value.trim()==="") return;
+
+    let userMsg=document.createElement("div");
+    userMsg.className="msg user";
+    userMsg.innerText=input.value;
+    chat.appendChild(userMsg);
+
+    let typing=document.createElement("div");
+    typing.className="msg ai typing";
+    typing.innerText="EVA is analyzing your mood...";
+    chat.appendChild(typing);
+
+    setTimeout(()=>{
+        typing.remove();
+
+        let text=input.value.toLowerCase();
+        let reply="";
+
+        if(text.includes("stress")) reply="Take a moment to relax and breathe.";
+        else if(text.includes("tired")) reply="Rest is important. Consider a break.";
+        else reply="Your well-being matters. Stay healthy.";
+
+        let emotions=["Happy","Stressed","Tired","Neutral"];
+        let i=Math.floor(Math.random()*4);
+
+        document.getElementById("emotion").innerText=emotions[i];
+
+        let aiMsg=document.createElement("div");
+        aiMsg.className="msg ai";
+        aiMsg.innerText=reply;
+
+        chat.appendChild(aiMsg);
+        chat.scrollTop=chat.scrollHeight;
+
+    },1000);
+
+    input.value="";
+}
+
+function voice(){
+    let btn=document.getElementById("micBtn");
+    btn.classList.add("active");
+
+    setTimeout(()=>{
+        document.getElementById("input").value="(Voice input simulated)";
+        btn.classList.remove("active");
+    },1500);
+}
+</script>
+
+</body>
+</html>
